@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  TOOL
+}
+
+enum ToolExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String?
+  state     Json?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages     Message[]
+  toolCalls    ToolExecution[]
+  checkpoints  StateCheckpoint[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  conversationId String
+  role           MessageRole
+  content        String
+  metadata       Json?
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model ToolExecution {
+  id             String             @id @default(cuid())
+  conversationId String
+  toolName       String
+  input          Json
+  output         Json?
+  status         ToolExecutionStatus @default(PENDING)
+  error          String?
+  durationMs     Int?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("tool_executions")
+}
+
+model StateCheckpoint {
+  id             String   @id @default(cuid())
+  conversationId String
+  state          Json
+  step           Int
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("state_checkpoints")
+}

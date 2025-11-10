@@ -1,0 +1,32 @@
+{
+  "name": "claude-code-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered coding assistant using Gemini, LangGraph, and MCP",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "keywords": ["ai", "coding-assistant", "gemini", "mcp", "langgraph"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@langchain/core": "^0.3.24",
+    "@langchain/langgraph": "^0.2.22",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@prisma/client": "^6.1.0",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.4.7",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "prisma": "^6.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
