@@ -4,6 +4,7 @@ import { HumanMessage, AIMessage } from '@langchain/core/messages';
 import { graph } from './agent/graph';
 import { conversationService } from './services/conversation.service';
 import { mcpService } from './services/mcp.service';
+import { webSearchService } from './services/web-search.service';
 import { CLIInterface } from './cli/interface';
 
 // Helper function to process user input
@@ -131,39 +132,28 @@ async function main() {
       );
     }
 
-    try {
-      // Connect to web search server (Brave Search)
-      if (
-        process.env.BRAVE_API_KEY &&
-        process.env.BRAVE_API_KEY !== 'your_brave_api_key_here'
-      ) {
-        await mcpService.connectServer('websearch', 'npx', [
-          '-y',
-          '@brave/brave-search-mcp-server',
-        ]);
-        console.log(
-          chalk.hex('#CD6F47')('✓') + chalk.gray(' Web search server')
-        );
-      } else {
-        console.log(
-          chalk.yellow('✗') + chalk.gray(' Web search server (no API key)')
-        );
-      }
-    } catch (error) {
-      const errorObj = error as Error;
+    // Check web search availability (using Tavily SDK directly, not MCP)
+    if (webSearchService.isAvailable()) {
       console.log(
-        chalk.yellow('✗') +
-          chalk.gray(' Web search server: ' + errorObj.message)
+        chalk.hex('#CD6F47')('✓') + chalk.gray(' Web search (Tavily)')
+      );
+    } else {
+      console.log(
+        chalk.yellow('○') +
+          chalk.gray(' Web search (get free API key at https://tavily.com)')
       );
     }
 
     // List all available tools
     const availableTools = await mcpService.getAllTools();
+    const webSearchToolCount = webSearchService.isAvailable() ? 1 : 0;
     console.log(
       chalk.gray(
-        `\nReady with ${availableTools.length} tools from ${
-          mcpService.getConnectedServers().length
-        } servers\n`
+        `\nReady with ${
+          availableTools.length + webSearchToolCount
+        } tools from ${mcpService.getConnectedServers().length} servers${
+          webSearchToolCount ? ' + web search' : ''
+        }\n`
       )
     );
 

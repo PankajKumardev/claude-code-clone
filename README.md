@@ -8,7 +8,7 @@ An AI-powered coding assistant built with Node.js/TypeScript, integrating Gemini
 - **Tool Integration**: Connects to external tools via Model Context Protocol (MCP)
   - Filesystem operations (read, write, search files)
   - GitHub integration (with token support)
-  - Web search capabilities (Brave Search API)
+  - Web search via Tavily API (1,000 free searches/month, no credit card!)
 - **Conversation Memory**: Maintains context across interactions with PostgreSQL database
 - **Clean CLI Interface**: Professional copper-themed command-line interface
 - **State Management**: LangGraph-powered agent workflow for complex task orchestration
@@ -19,7 +19,7 @@ An AI-powered coding assistant built with Node.js/TypeScript, integrating Gemini
 - PostgreSQL database
 - Gemini API key
 - (Optional) GitHub token for GitHub integration
-- (Optional) Brave API key for web search
+- (Optional) Tavily API key for web search (free, no credit card)
 
 ## 🚀 Installation
 
@@ -50,8 +50,9 @@ GEMINI_API_KEY="your_gemini_api_key_here"
 # Optional: GitHub Integration
 GITHUB_TOKEN="your_github_token_here"
 
-# Optional: Brave Search
-BRAVE_API_KEY="your_brave_api_key_here"
+# Optional: Tavily Search API (Free 1000 searches/month, no CC!)
+# Get your free key at: https://tavily.com
+TAVILY_API_KEY="your_tavily_api_key_here"
 ```
 
 4. **Set up the database**
@@ -151,8 +152,8 @@ npm run db:studio  # Open Prisma Studio (database GUI)
 The assistant connects to the following MCP servers:
 
 - **@modelcontextprotocol/server-filesystem**: File operations
-- **@missionsquad/mcp-github**: GitHub integration
-- **@brave/brave-search-mcp-server**: Web search
+- **@missionsquad/mcp-github**: GitHub integration (optional, requires token)
+- **@tavily/tavily-mcp-server**: AI-powered web search (optional, 1000 free searches/month)
 
 Servers are automatically installed via `npx` when the application starts.
 

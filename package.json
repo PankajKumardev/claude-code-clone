@@ -10,7 +10,13 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
   },
-  "keywords": ["ai", "coding-assistant", "gemini", "mcp", "langgraph"],
+  "keywords": [
+    "ai",
+    "coding-assistant",
+    "gemini",
+    "mcp",
+    "langgraph"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -21,7 +27,8 @@
     "@prisma/client": "^6.1.0",
     "chalk": "^4.1.2",
     "dotenv": "^16.4.7",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "tavily": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

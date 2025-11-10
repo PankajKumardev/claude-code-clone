@@ -2,7 +2,9 @@ import { AIMessage, HumanMessage, ToolMessage } from '@langchain/core/messages';
 import { conversationService } from '../services/conversation.service';
 import { geminiService } from '../services/gemini.service';
 import { mcpService } from '../services/mcp.service';
+import { webSearchService } from '../services/web-search.service';
 import { AgentState } from './state';
+import chalk from 'chalk';
 
 /**
  * User Input Node - Processes user input and saves to database
@@ -38,6 +40,11 @@ export async function modelNode(
     // Get available tools from MCP servers
     const availableTools = await mcpService.getAllTools();
 
+    // Add web search tool if configured
+    if (webSearchService.isAvailable()) {
+      availableTools.push(webSearchService.getToolDefinition());
+    }
+
     // Get working directory from metadata
     const workingDirectory = state.metadata?.workingDirectory || process.cwd();
 
@@ -63,7 +70,7 @@ export async function modelNode(
           type: 'function' as const,
           function: {
             name: call.name,
-            arguments: JSON.stringify(call.args),
+            arguments: JSON.stringify(call.args || {}),
           },
         })
       );
@@ -132,19 +139,28 @@ export async function toolUseNode(
             ? JSON.parse(toolCallAny.function.arguments)
             : {};
 
-          // Determine which MCP server to use based on tool name
-          const serverName = mcpService.getServerForTool(toolName);
+          let result: any;
 
-          if (!serverName) {
-            throw new Error(`No server found for tool: ${toolName}`);
+          // Check if it's web search tool
+          if (toolName === 'web_search') {
+            result = await webSearchService.executeTool(args);
+            // executeTool returns formatted string, don't stringify again
+          } else {
+            // Determine which MCP server to use based on tool name
+            const serverName = mcpService.getServerForTool(toolName);
+
+            if (!serverName) {
+              throw new Error(`No server found for tool: ${toolName}`);
+            }
+
+            // Execute the tool
+            result = await mcpService.callTool(serverName, toolName, args);
           }
-
-          // Execute the tool
-          const result = await mcpService.callTool(serverName, toolName, args);
 
           // Create tool message
           const toolMessage = new ToolMessage({
-            content: JSON.stringify(result),
+            content:
+              typeof result === 'string' ? result : JSON.stringify(result),
             tool_call_id: toolCallAny.id || '',
             name: toolName,
           });
