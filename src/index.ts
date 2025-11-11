@@ -36,7 +36,7 @@ async function processUserInput(
   // Load previous conversation history from database (last 10 messages to stay within context limits)
   const conversationHistory = await conversationService.getConversationMessages(
     conversation.id,
-    10 // Only load last 10 messages to prevent context overflow
+    10
   );
 
   // Create initial state with conversation history + new message
@@ -89,7 +89,6 @@ async function main() {
   cli.displayWelcome();
 
   try {
-    // Test database connection
     await conversationService.createConversation('system-test');
     console.log(chalk.hex('#CD6F47')('✓') + chalk.gray(' Database connected'));
 
@@ -186,14 +185,11 @@ async function main() {
     cli.displayError(`Fatal error: ${errorObj.message}`);
     process.exit(1);
   } finally {
-    // Cleanup
     console.log('Cleaning up...');
     try {
       await mcpService.disconnectAll();
       console.log('Disconnected from all MCP servers');
-    } catch (error) {
-      // Silent cleanup
-    }
+    } catch (error) {}
   }
 }
 
@@ -202,9 +198,7 @@ process.on('SIGINT', async () => {
   console.log('\nReceived SIGINT, shutting down gracefully...');
   try {
     await mcpService.disconnectAll();
-  } catch (error) {
-    // Silent error handling
-  }
+  } catch (error) {}
   process.exit(0);
 });
 
@@ -212,9 +206,7 @@ process.on('SIGTERM', async () => {
   console.log('\nReceived SIGTERM, shutting down gracefully...');
   try {
     await mcpService.disconnectAll();
-  } catch (error) {
-    // Silent error handling
-  }
+  } catch (error) {}
   process.exit(0);
 });
 
@@ -224,16 +216,12 @@ process.on('uncaughtException', (error: Error) => {
   if ('code' in error && error.code === 'EPIPE') {
     return;
   }
-  // Silent error handling for other errors
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason: any) => {
-  // Silent error handling
 });
 
-// Start the application
 main().catch((error) => {
-  // Silent error handling
   process.exit(1);
 });

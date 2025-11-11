@@ -7,9 +7,6 @@ import {
 } from '@langchain/core/messages';
 
 export class ConversationService {
-  /**
-   * Create a new conversation
-   */
   async createConversation(userId: string = 'default-user', title?: string) {
     try {
       const conversation = await prisma.conversation.create({
@@ -21,14 +18,10 @@ export class ConversationService {
 
       return conversation;
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
 
-  /**
-   * Get a conversation by ID
-   */
   async getConversation(id: string) {
     try {
       const conversation = await prisma.conversation.findUnique({
@@ -45,14 +38,10 @@ export class ConversationService {
 
       return conversation;
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
 
-  /**
-   * Save messages to a conversation
-   */
   async saveMessages(
     conversationId: string,
     messages: BaseMessage[]
@@ -78,14 +67,10 @@ export class ConversationService {
         data: messageData,
       });
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
 
-  /**
-   * Save a tool execution
-   */
   async saveToolExecution(
     conversationId: string,
     toolName: string,
@@ -104,27 +89,21 @@ export class ConversationService {
         },
       });
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
 
-  /**
-   * Update conversation state
-   */
   async updateState(
     conversationId: string,
     state: any,
     step: number
   ): Promise<void> {
     try {
-      // Update conversation
       await prisma.conversation.update({
         where: { id: conversationId },
         data: { state },
       });
 
-      // Create checkpoint
       await prisma.stateCheckpoint.create({
         data: {
           conversationId,
@@ -133,7 +112,6 @@ export class ConversationService {
         },
       });
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
@@ -149,15 +127,11 @@ export class ConversationService {
     } else if (message instanceof ToolMessage) {
       return 'TOOL';
     } else {
-      return 'USER'; // Default fallback
+      return 'USER'; 
     }
   }
 
-  /**
-   * Get conversation history as LangChain messages
-   * @param conversationId - The conversation ID
-   * @param limit - Maximum number of recent messages to retrieve (default: 20)
-   */
+
   async getConversationMessages(
     conversationId: string,
     limit: number = 20
@@ -194,11 +168,9 @@ export class ConversationService {
         }
       });
     } catch (error) {
-      // Silent error handling - return empty array
       return [];
     }
   }
 }
 
-// Export singleton instance
 export const conversationService = new ConversationService();

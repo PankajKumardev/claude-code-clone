@@ -1,5 +1,4 @@
 import { TavilyClient } from 'tavily';
-import chalk from 'chalk';
 
 export class WebSearchService {
   private client: TavilyClient | null = null;
@@ -13,16 +12,13 @@ export class WebSearchService {
     }
   }
 
-  /**
-   * Check if web search is configured
-   */
+// Check if web search is configured
   isAvailable(): boolean {
     return this.isConfigured;
   }
 
-  /**
-   * Search the web using Tavily API
-   */
+ // search the web using Tavily API
+
   async search(
     query: string,
     options?: {
@@ -60,10 +56,7 @@ export class WebSearchService {
       throw new Error(`Web search failed: ${errorObj.message}`);
     }
   }
-
-  /**
-   * Get search tool definition for Gemini (MCP-compatible format)
-   */
+// Get web search tool definition for Gemini (MCP-compatible format)
   getToolDefinition() {
     return {
       name: 'web_search',
@@ -86,9 +79,7 @@ export class WebSearchService {
     };
   }
 
-  /**
-   * Execute web search tool
-   */
+  // Execute the web search tool
   async executeTool(args: {
     query: string;
     maxResults?: number;

@@ -17,7 +17,7 @@ export class GeminiService {
   constructor() {
     this.client = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     this.model = this.client.getGenerativeModel({
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -39,9 +39,6 @@ export class GeminiService {
     });
   }
 
-  /**
-   * Generate a response from Gemini API
-   */
   async generateResponse(
     messages: BaseMessage[],
     tools: any[] = [],
@@ -58,7 +55,7 @@ export class GeminiService {
       let modelToUse = this.model;
       if (geminiTools.length > 0) {
         modelToUse = this.client.getGenerativeModel({
-          model: 'gemini-2.5-flash-preview-05-20',
+          model: 'gemini-2.5-flash',
           tools: geminiTools,
           safetySettings: [
             {
@@ -145,14 +142,11 @@ Be direct, use tools proactively, and complete tasks efficiently.`,
           functionCalls && functionCalls.length > 0 ? 'tool_use' : 'end_turn',
       };
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
 
-  /**
-   * Convert LangChain messages to Gemini format
-   */
+  // Convert LangChain messages to Gemini format
   private convertMessagesToGemini(messages: BaseMessage[]): any[] {
     const geminiMessages: any[] = [];
 
@@ -221,9 +215,9 @@ Be direct, use tools proactively, and complete tasks efficiently.`,
     return geminiMessages;
   }
 
-  /**
-   * Convert tools to Gemini format
-   */
+  
+   // Convert tools to Gemini format
+
   private convertToolsToGemini(tools: any[]): any[] {
     return tools.map((tool) => {
       // Clean up the inputSchema - remove JSON Schema metadata that Gemini doesn't accept
@@ -277,13 +271,8 @@ Be direct, use tools proactively, and complete tasks efficiently.`,
     if (schema.enum) {
       cleaned.enum = schema.enum;
     }
-
-    // Remove fields that Gemini doesn't support
-    // Don't copy: $schema, additionalProperties, title, examples, default, etc.
-
     return cleaned;
   }
 }
 
-// Export singleton instance
 export const geminiService = new GeminiService();

@@ -6,9 +6,9 @@ import { webSearchService } from '../services/web-search.service';
 import { AgentState } from './state';
 import chalk from 'chalk';
 
-/**
- * User Input Node - Processes user input and saves to database
- */
+
+ // User Input Node - Processes user input and saves to database
+ 
 export async function userInputNode(
   state: AgentState
 ): Promise<Partial<AgentState>> {
@@ -30,9 +30,7 @@ export async function userInputNode(
   }
 }
 
-/**
- * Model Node - Calls Gemini API to generate response and decide on tool usage
- */
+ // Model Node - Calls Gemini API to generate response and decide on tool usage 
 export async function modelNode(
   state: AgentState
 ): Promise<Partial<AgentState>> {
@@ -115,9 +113,8 @@ export async function modelNode(
   }
 }
 
-/**
- * Tool Use Node - Executes tools called by the model
- */
+ // Tool Use Node - Executes tools called by the model
+ 
 export async function toolUseNode(
   state: AgentState
 ): Promise<Partial<AgentState>> {
@@ -221,7 +218,6 @@ export async function toolUseNode(
       toolResults,
     };
   } catch (error) {
-    // Silent error handling
     return {};
   }
 }

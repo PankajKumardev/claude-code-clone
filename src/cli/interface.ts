@@ -9,9 +9,7 @@ export class CLIInterface {
     this.spinner = ora();
   }
 
-  /**
-   * Display welcome banner
-   */
+  // Display welcome message
   displayWelcome(): void {
     console.log(
       chalk.bold.hex('#CD6F47')(`
@@ -29,9 +27,6 @@ export class CLIInterface {
     console.log(chalk.gray("Type your questions or '/exit' to quit\n"));
   }
 
-  /**
-   * Prompt user for input
-   */
   async promptUser(): Promise<string> {
     // Stop any running spinner before prompting
     this.spinner.stop();
@@ -55,31 +50,23 @@ export class CLIInterface {
     });
   }
 
-  /**
-   * Display thinking indicator
-   */
+  // Display thinking indicator
   displayThinking(): void {
     this.spinner.start(chalk.yellow('Claude is thinking...'));
   }
 
-  /**
-   * Stop thinking indicator
-   */
+  // Stop thinking indicator
   stopThinking(): void {
     this.spinner.stop();
   }
 
-  /**
-   * Display AI response
-   */
+  // Display AI response
   displayResponse(message: string): void {
     console.log(chalk.hex('#CD6F47')('Claude:'), message);
     console.log(); // Empty line for spacing
   }
 
-  /**
-   * Display tool execution status
-   */
+  // Display tool execution status
   displayToolExecution(
     toolName: string,
     status: 'start' | 'success' | 'error'
@@ -105,9 +92,7 @@ export class CLIInterface {
     console.log(colors[status](`${icons[status]} ${messages[status]}`));
   }
 
-  /**
-   * Display available commands
-   */
+  // Display available commands
   displayHelp(): void {
     console.log(chalk.bold('\nAvailable commands:'));
     console.log(chalk.cyan('  /help') + '  - Show this help message');
@@ -115,10 +100,7 @@ export class CLIInterface {
     console.log(chalk.cyan('  /exit') + '  - Exit the application');
     console.log();
   }
-
-  /**
-   * Display available tools
-   */
+  // Display available tools
   displayTools(tools: any[]): void {
     if (tools.length === 0) {
       console.log(chalk.yellow('No tools available'));
@@ -135,30 +117,21 @@ export class CLIInterface {
     console.log();
   }
 
-  /**
-   * Display error message
-   */
+  // Display error message
   displayError(message: string): void {
     console.log(chalk.red(`Error: ${message}`));
   }
 
-  /**
-   * Display success message
-   */
+  // Display success message
   displaySuccess(message: string): void {
     console.log(chalk.hex('#CD6F47')(`${message}`));
   }
-
-  /**
-   * Display info message
-   */
+  // Display info message
   displayInfo(message: string): void {
     console.log(chalk.hex('#CD6F47')(`${message}`));
   }
 
-  /**
-   * Clear the console
-   */
+  // Clear the console
   clear(): void {
     console.clear();
   }

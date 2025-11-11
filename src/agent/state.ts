@@ -37,5 +37,4 @@ export const AgentStateAnnotation = Annotation.Root({
   }),
 });
 
-// Export the state type for use in nodes
 export type AgentState = typeof AgentStateAnnotation.State;

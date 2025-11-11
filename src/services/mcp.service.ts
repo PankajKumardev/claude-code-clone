@@ -13,9 +13,7 @@ export class MCPService {
   private servers: Map<string, MCPServer> = new Map();
   private connectedServers: Set<string> = new Set();
 
-  /**
-   * Connect to an MCP server using stdio
-   */
+  // Connect to an MCP server using stdio
   async connectServer(
     name: string,
     command: string,
@@ -41,10 +39,7 @@ export class MCPService {
         stderr: 'pipe', // Capture stderr instead of inheriting
       });
 
-      // Add error handlers to prevent crashes
-      transport.onerror = (error) => {
-        // Silent error handling
-      };
+      transport.onerror = (error) => {};
 
       transport.onclose = () => {
         this.connectedServers.delete(name);
@@ -66,9 +61,6 @@ export class MCPService {
     }
   }
 
-  /**
-   * Disconnect from an MCP server
-   */
   async disconnectServer(name: string): Promise<void> {
     try {
       const server = this.servers.get(name);
@@ -79,21 +71,13 @@ export class MCPService {
             server.client.close(),
             new Promise((resolve) => setTimeout(resolve, 1000)), // 1s timeout
           ]);
-        } catch (closeError: any) {
-          // Ignore EPIPE errors during close - they're expected
-          // Silent error handling for all close errors
-        }
+        } catch (closeError: any) {}
         this.servers.delete(name);
         this.connectedServers.delete(name);
       }
-    } catch (error) {
-      // Don't re-throw - allow cleanup to continue
-    }
+    } catch (error) {}
   }
 
-  /**
-   * List tools from a specific server
-   */
   async listTools(serverName: string): Promise<any[]> {
     try {
       const server = this.servers.get(serverName);
@@ -111,14 +95,10 @@ export class MCPService {
 
       return tools;
     } catch (error) {
-      // Silent error handling
       return [];
     }
   }
 
-  /**
-   * Get all tools from all connected servers
-   */
   async getAllTools(): Promise<any[]> {
     const allTools: any[] = [];
 
@@ -130,9 +110,6 @@ export class MCPService {
     return allTools;
   }
 
-  /**
-   * Call a tool on a specific server
-   */
   async callTool(
     serverName: string,
     toolName: string,
@@ -151,7 +128,6 @@ export class MCPService {
 
       return response;
     } catch (error) {
-      // Silent error handling - rethrow for caller to handle
       throw error;
     }
   }
@@ -170,27 +146,19 @@ export class MCPService {
     return null;
   }
 
-  /**
-   * Check if a server is connected
-   */
+  // check if a server is connected
   isConnected(serverName: string): boolean {
     return this.connectedServers.has(serverName);
   }
 
-  /**
-   * Get all connected server names
-   */
+  // get all connected server names
   getConnectedServers(): string[] {
     return Array.from(this.connectedServers);
   }
-
-  /**
-   * Disconnect all servers
-   */
+  // Disconnect all servers
   async disconnectAll(): Promise<void> {
     const promises = Array.from(this.connectedServers).map((serverName) =>
       this.disconnectServer(serverName).catch(() => {
-        // Silent error handling
       })
     );
 
@@ -198,5 +166,4 @@ export class MCPService {
   }
 }
 
-// Export singleton instance
 export const mcpService = new MCPService();

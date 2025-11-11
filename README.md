@@ -1,6 +1,6 @@
 # Claude Code Assistant
 
-An AI-powered coding assistant built with Node.js/TypeScript, integrating Gemini API via LangGraph for agentic workflow and MCP (Model Context Protocol) for external tool access.
+An AI-driven coding companion powered by Gemini, LangGraph, and MCP — built for developers who want an intelligent, context-aware terminal assistant.
 
 ## 🎯 Features
 
